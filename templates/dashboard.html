@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Finance Advisor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+    <nav class="bg-slate-950 border-b border-purple-500/20">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-wallet text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    FinanceAI
+                </span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/transactions" class="text-gray-300 hover:text-purple-400 transition">Transaksi</a>
+                <a href="/advisor" class="text-gray-300 hover:text-purple-400 transition">AI Advisor</a>
+                <a href="/settings" class="text-gray-300 hover:text-purple-400 transition">Pengaturan</a>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Dashboard Keuangan Anda</h1>
+            <p class="text-gray-400">Kelola dan pantau kesehatan finansial Anda dengan mudah</p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Total Income -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 hover:border-purple-400/50 transition">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 font-medium">Total Pemasukan</h3>
+                    <i class="fas fa-arrow-up text-green-400 text-2xl"></i>
+                </div>
+                <p id="totalIncome" class="text-4xl font-bold text-green-400">Rp 0</p>
+                <p class="text-gray-500 text-sm mt-2">Periode ini</p>
+            </div>
+
+            <!-- Total Expense -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 hover:border-purple-400/50 transition">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 font-medium">Total Pengeluaran</h3>
+                    <i class="fas fa-arrow-down text-red-400 text-2xl"></i>
+                </div>
+                <p id="totalExpense" class="text-4xl font-bold text-red-400">Rp 0</p>
+                <p class="text-gray-500 text-sm mt-2">Periode ini</p>
+            </div>
+
+            <!-- Net Balance -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 hover:border-purple-400/50 transition">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 font-medium">Saldo Bersih</h3>
+                    <i class="fas fa-wallet text-blue-400 text-2xl"></i>
+                </div>
+                <p id="netBalance" class="text-4xl font-bold text-blue-400">Rp 0</p>
+                <p class="text-gray-500 text-sm mt-2">Pemasukan - Pengeluaran</p>
+            </div>
+
+            <!-- Transactions Count -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 hover:border-purple-400/50 transition">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 font-medium">Transaksi</h3>
+                    <i class="fas fa-exchange-alt text-purple-400 text-2xl"></i>
+                </div>
+                <p id="transactionCount" class="text-4xl font-bold text-purple-400">0</p>
+                <p class="text-gray-500 text-sm mt-2">Jumlah transaksi</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Category Breakdown -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-white mb-6">Perbandingan Pemasukan & Pengeluaran</h3>
+                <div class="flex justify-center items-center" style="height: 300px;">
+                    <canvas id="incomeExpenseChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Trend -->
+            <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-white mb-6">Tren Bulanan (12 Bulan Terakhir)</h3>
+                <div style="height: 300px;">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="/transactions" class="bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-2xl p-6 transition transform hover:scale-105">
+                <i class="fas fa-plus text-3xl mb-4"></i>
+                <h4 class="text-lg font-bold">Tambah Transaksi</h4>
+                <p class="text-purple-200 text-sm mt-2">Catat transaksi baru Anda</p>
+            </a>
+
+            <a href="/advisor" class="bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-2xl p-6 transition transform hover:scale-105">
+                <i class="fas fa-robot text-3xl mb-4"></i>
+                <h4 class="text-lg font-bold">AI Advisor</h4>
+                <p class="text-pink-200 text-sm mt-2">Dapatkan saran keuangan cerdas</p>
+            </a>
+
+            <a href="/settings" class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl p-6 transition transform hover:scale-105">
+                <i class="fas fa-cog text-3xl mb-4"></i>
+                <h4 class="text-lg font-bold">Pengaturan</h4>
+                <p class="text-blue-200 text-sm mt-2">Kelola profil dan API key</p>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
+        }
+
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const summaryRes = await fetch('/api/metrics/summary', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const summary = await summaryRes.json();
+
+                document.getElementById('totalIncome').textContent = `Rp ${Math.round(summary.total_income).toLocaleString('id-ID')}`;
+                document.getElementById('totalExpense').textContent = `Rp ${Math.round(summary.total_expense).toLocaleString('id-ID')}`;
+                document.getElementById('netBalance').textContent = `Rp ${Math.round(summary.net_balance).toLocaleString('id-ID')}`;
+                document.getElementById('transactionCount').textContent = summary.transaction_count;
+
+                // Load charts
+                loadCharts(summary);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function loadCharts(summary) {
+            // Income vs Expense Pie Chart
+            const ctx1 = document.getElementById('incomeExpenseChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pemasukan', 'Pengeluaran'],
+                    datasets: [{
+                        data: [summary.total_income, summary.total_expense],
+                        backgroundColor: ['#4ade80', '#ef4444'],
+                        borderColor: ['#22c55e', '#f87171'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#d1d5db', font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Trend
+            try {
+                const trendRes = await fetch('/api/metrics/monthly-trend', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const monthlyData = await trendRes.json();
+
+                const months = Object.keys(monthlyData).sort();
+                const incomeData = months.map(m => monthlyData[m].income);
+                const expenseData = months.map(m => monthlyData[m].expense);
+
+                const ctx2 = document.getElementById('monthlyTrendChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: 'Pemasukan',
+                                data: incomeData,
+                                borderColor: '#4ade80',
+                                backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Pengeluaran',
+                                data: expenseData,
+                                borderColor: '#ef4444',
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#d1d5db', font: { size: 14 } }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: '#9ca3af' },
+                                grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#9ca3af' },
+                                grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading monthly trend:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

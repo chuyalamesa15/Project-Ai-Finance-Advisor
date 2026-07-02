@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Advisor - AI Finance Advisor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+    <nav class="bg-slate-950 border-b border-purple-500/20">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-wallet text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    FinanceAI
+                </span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/dashboard" class="text-gray-300 hover:text-purple-400 transition">Dashboard</a>
+                <a href="/transactions" class="text-gray-300 hover:text-purple-400 transition">Transaksi</a>
+                <a href="/settings" class="text-gray-300 hover:text-purple-400 transition">Pengaturan</a>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-robot text-pink-400 mr-3"></i>AI Financial Advisor
+            </h1>
+            <p class="text-gray-400">Konsultasi keuangan cerdas dengan kecerdasan buatan Gemini</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Quick Questions -->
+            <div class="lg:col-span-1">
+                <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-white mb-4">Pertanyaan Umum</h3>
+                    <div class="space-y-3">
+                        <button onclick="askQuestion('Bagaimana cara menghemat uang setiap bulan?')" class="w-full text-left p-3 bg-slate-700/30 hover:bg-purple-500/20 text-gray-300 rounded-lg transition text-sm border border-purple-500/20">
+                            <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>Tips Hemat
+                        </button>
+                        <button onclick="askQuestion('Bagaimana strategi investasi yang baik?')" class="w-full text-left p-3 bg-slate-700/30 hover:bg-purple-500/20 text-gray-300 rounded-lg transition text-sm border border-purple-500/20">
+                            <i class="fas fa-chart-line text-green-400 mr-2"></i>Strategi Investasi
+                        </button>
+                        <button onclick="askQuestion('Apa saja kategori pengeluaran yang harus diprioritaskan?')" class="w-full text-left p-3 bg-slate-700/30 hover:bg-purple-500/20 text-gray-300 rounded-lg transition text-sm border border-purple-500/20">
+                            <i class="fas fa-list text-blue-400 mr-2"></i>Prioritas Pengeluaran
+                        </button>
+                        <button onclick="askQuestion('Berapa yang seharusnya saya tabung setiap bulan?')" class="w-full text-left p-3 bg-slate-700/30 hover:bg-purple-500/20 text-gray-300 rounded-lg transition text-sm border border-purple-500/20">
+                            <i class="fas fa-piggy-bank text-pink-400 mr-2"></i>Target Tabungan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="lg:col-span-3">
+                <div class="bg-slate-800/50 backdrop-blur border border-purple-500/20 rounded-2xl p-6 flex flex-col h-screen max-h-screen md:max-h-[600px]">
+                    <!-- Chat Messages -->
+                    <div id="chatBox" class="flex-1 overflow-y-auto mb-6 space-y-4 pr-4">
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-robot text-4xl text-purple-400 mb-4 block"></i>
+                            <p>Halo! Saya adalah AI Financial Advisor Anda.</p>
+                            <p class="text-sm mt-2">Tanyakan apa pun tentang keuangan Anda.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Form -->
+                    <form id="chatForm" class="flex gap-3">
+                        <input type="text" id="question" placeholder="Tanyakan pertanyaan keuangan Anda..." required
+                               class="flex-1 px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base">
+                        <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-lg transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+
+                    <div id="apiKeyWarning" class="hidden mt-4 p-4 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-yellow-300 text-sm">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>API Key Gemini belum dikonfigurasi. Silakan <a href="/settings" class="font-semibold hover:underline">atur di pengaturan</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
+        }
+
+        const token = localStorage.getItem('token');
+
+        // Format message with markdown-like formatting
+        function formatMessage(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>')
+                .replace(/• (.*?)<br>/g, '<li>$1</li>');
+        }
+
+        // Add message to chat
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chatBox');
+            const messageEl = document.createElement('div');
+            messageEl.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            messageEl.innerHTML = `
+                <div class="max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-lg ${
+                    sender === 'user'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-br-none'
+                        : 'bg-slate-700/50 border border-purple-500/30 text-gray-300 rounded-bl-none'
+                }">
+                    ${formatMessage(text)}
+                </div>
+            `;
+            chatBox.appendChild(messageEl);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Ask question
+        async function askQuestion(question) {
+            document.getElementById('question').value = question;
+            submitQuestion();
+        }
+
+        // Submit question
+        async function submitQuestion() {
+            const question = document.getElementById('question').value.trim();
+            if (!question) return;
+
+            addMessage(question, 'user');
+            document.getElementById('question').value = '';
+
+            // Show loading
+            const chatBox = document.getElementById('chatBox');
+            const loadingEl = document.createElement('div');
+            loadingEl.className = 'flex justify-start';
+            loadingEl.innerHTML = `
+                <div class="px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-gray-400">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>Sedang berpikir...
+                </div>
+            `;
+            chatBox.appendChild(loadingEl);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/api/advisor/advice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                loadingEl.remove();
+
+                if (res.ok) {
+                    const data = await res.json();
+                    addMessage(data.advice, 'ai');
+                } else {
+                    const error = await res.json();
+                    if (error.error.includes('API key')) {
+                        document.getElementById('apiKeyWarning').classList.remove('hidden');
+                    } else {
+                        addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.', 'ai');
+                    }
+                }
+            } catch (error) {
+                loadingEl.remove();
+                addMessage('Gagal terhubung ke server.', 'ai');
+                console.error('Error:', error);
+            }
+        }
+
+        // Form submission
+        document.getElementById('chatForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitQuestion();
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>

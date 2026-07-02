@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - AI Finance Advisor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen flex items-center justify-center py-8">
+    <div class="w-full max-w-md">
+        <!-- Logo Section -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-wallet text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                FinanceAI
+            </h1>
+            <p class="text-gray-400">Daftar dan Kelola Keuangan Anda</p>
+        </div>
+
+        <!-- Register Form -->
+        <div class="bg-slate-800/50 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-8 shadow-2xl">
+            <h2 class="text-2xl font-bold text-white mb-6">Buat Akun Baru</h2>
+
+            <form id="registerForm">
+                <!-- Name Input -->
+                <div class="mb-4">
+                    <label class="block text-gray-300 font-medium mb-2">Nama Lengkap</label>
+                    <input type="text" id="name" name="name"
+                           class="w-full px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base"
+                           placeholder="Masukkan nama Anda" required>
+                </div>
+
+                <!-- Email Input -->
+                <div class="mb-4">
+                    <label class="block text-gray-300 font-medium mb-2">Email</label>
+                    <input type="email" id="email" name="email"
+                           class="w-full px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base"
+                           placeholder="nama@example.com" required>
+                </div>
+
+                <!-- Account Type Selection -->
+                <div class="mb-4">
+                    <label class="block text-gray-300 font-medium mb-3">Jenis Akun</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 bg-slate-700/30 border border-purple-500/30 rounded-lg cursor-pointer hover:border-purple-400 transition">
+                            <input type="radio" name="account_type" value="personal" class="w-4 h-4" checked>
+                            <span class="ml-3 text-gray-300">
+                                <i class="fas fa-user mr-2 text-purple-400"></i>
+                                <span class="font-medium">Akun Pribadi</span>
+                                <p class="text-xs text-gray-500">Untuk pengelolaan keuangan pribadi</p>
+                            </span>
+                        </label>
+
+                        <label class="flex items-center p-3 bg-slate-700/30 border border-purple-500/30 rounded-lg cursor-pointer hover:border-purple-400 transition">
+                            <input type="radio" name="account_type" value="business" class="w-4 h-4">
+                            <span class="ml-3 text-gray-300">
+                                <i class="fas fa-building mr-2 text-pink-400"></i>
+                                <span class="font-medium">Akun Badan Usaha</span>
+                                <p class="text-xs text-gray-500">Untuk pengelolaan keuangan bisnis</p>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Business Fields (Hidden by default) -->
+                <div id="businessFields" class="hidden space-y-4 mb-4">
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-2">Nama Bisnis</label>
+                        <input type="text" id="business_name"
+                               class="w-full px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base"
+                               placeholder="Nama perusahaan/usaha Anda">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-2">Jenis Bisnis</label>
+                        <input type="text" id="business_type"
+                               class="w-full px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base"
+                               placeholder="Misal: Perdagangan, Jasa, Manufaktur, dll">
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="mb-6">
+                    <label class="block text-gray-300 font-medium mb-2">Password</label>
+                    <input type="password" id="password" name="password"
+                           class="w-full px-4 py-3 bg-slate-700/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 transition text-base"
+                           placeholder="Minimal 6 karakter" required>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMsg" class="hidden mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-sm"></div>
+
+                <!-- Register Button -->
+                <button type="submit"
+                        class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-lg transition transform hover:scale-105 mb-4 text-base">
+                    <i class="fas fa-user-plus mr-2"></i>Daftar
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <p class="text-center text-gray-400 text-sm">
+                Sudah punya akun?
+                <a href="/login" class="text-purple-400 hover:text-purple-300 font-semibold">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle business fields
+        document.querySelectorAll('input[name="account_type"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const businessFields = document.getElementById('businessFields');
+                if (radio.value === 'business') {
+                    businessFields.classList.remove('hidden');
+                } else {
+                    businessFields.classList.add('hidden');
+                }
+            });
+        });
+
+        // Register Form Submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const account_type = document.querySelector('input[name="account_type"]:checked').value;
+            const business_name = document.getElementById('business_name')?.value;
+            const business_type = document.getElementById('business_type')?.value;
+
+            const payload = { name, email, password, account_type };
+            if (account_type === 'business') {
+                payload.business_name = business_name;
+                payload.business_type = business_type;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = '/dashboard';
+                } else {
+                    document.getElementById('errorMsg').textContent = data.error || 'Pendaftaran gagal';
+                    document.getElementById('errorMsg').classList.remove('hidden');
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = 'Terjadi kesalahan. Coba lagi.';
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
